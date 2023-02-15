@@ -92,8 +92,9 @@ UNS32 _getODentry( CO_Data* d,
   UNS32 errorCode;
   UNS32 szData;
   const indextable *ptrTable;
+  ODCallback_t *Callback;
 
-  ptrTable = (*d->scanIndexOD)(d, wIndex, &errorCode);
+  ptrTable = (*d->scanIndexOD)(wIndex, &errorCode, &Callback);
 
   if (errorCode != OD_SUCCESSFUL)
     return errorCode;
@@ -140,23 +141,31 @@ UNS32 _getODentry( CO_Data* d,
   }
   else /* no endianisation change */
 #  endif
-  memcpy(pDestData, ptrTable->pSubindex[bSubindex].pObject,szData);
 
-  if(*pDataType != visible_string)
+  if(*pDataType != visible_string) {
+      memcpy(pDestData, ptrTable->pSubindex[bSubindex].pObject,szData);
       *pExpectedSize = szData;
-  else {
-    /* VISIBLE_STRING objects are returned with \0 termination, if the user   *
-     * provided enough space.                                                 *
-     * Note:  If the parameter "Default String Size" of the Object Dictionary *
-     *        Editor is larger than the string, then the \0 byte will be      *
-     *        appended anyways!                                               */
-    if(*pExpectedSize > ptrTable->pSubindex[bSubindex].size) {
-      *((UNS8*)pDestData + szData) = '\0';
-      *pExpectedSize = szData + 1;
-    }
-    else
-       *pExpectedSize = szData;
+  }else{
+      /* TODO : CONFORM TO DS-301 :
+       *  - stop using NULL terminated strings
+       *  - store string size in td_subindex
+       * */
+      /* Copy null terminated string to user, and return discovered size */
+      UNS8 *ptr = (UNS8*)ptrTable->pSubindex[bSubindex].pObject;
+      UNS8 *ptr_start = ptr;
+      /* *pExpectedSize IS < szData . if null, use szData */
+      UNS8 *ptr_end = ptr + (*pExpectedSize ? *pExpectedSize : szData) ;
+      UNS8 *ptr_dest = (UNS8*)pDestData;
+      while( *ptr && ptr < ptr_end){
+          *(ptr_dest++) = *(ptr++);
+      }
+
+    *pExpectedSize = (UNS32) (ptr - ptr_start);
+    /* terminate string if not maximum length */
+    if (*pExpectedSize < szData)
+            *(ptr) = 0;
   }
+
   return OD_SUCCESSFUL;
 }
 
@@ -172,9 +181,9 @@ UNS32 _setODentry( CO_Data* d,
   UNS8 dataType;
   UNS32 errorCode;
   const indextable *ptrTable;
-  ODCallback_t Callback;
+  ODCallback_t *Callback;
 
-  ptrTable =(*d->scanIndexOD)(d, wIndex, &errorCode);
+  ptrTable =(*d->scanIndexOD)(wIndex, &errorCode, &Callback);
   if (errorCode != OD_SUCCESSFUL)
     return errorCode;
 
@@ -192,12 +201,11 @@ UNS32 _setODentry( CO_Data* d,
 
   dataType = ptrTable->pSubindex[bSubindex].bDataType;
   szData = ptrTable->pSubindex[bSubindex].size;
-  Callback = ptrTable->pSubindex[bSubindex].callback;
 
-  /* check the size, we must allow to store less bytes than data size, even for intergers
-	 (e.g. UNS40 : objdictedit will store it in a uint64_t, setting the size to 8 but PDO comes
-	 with 5 bytes so ExpectedSize is 5 */
-  if( *pExpectedSize == 0 || *pExpectedSize <= szData )
+  if( *pExpectedSize == 0 ||
+      *pExpectedSize == szData ||
+      /* allow to store a shorter string than entry size */
+      (dataType == visible_string && *pExpectedSize < szData))
     {
 #ifdef CANOPEN_BIG_ENDIAN
       /* re-endianize do not occur for bool, strings time and domains */
@@ -234,18 +242,17 @@ UNS32 _setODentry( CO_Data* d,
       *pExpectedSize = szData;
 
       /* Callbacks */
-      if(Callback){
-        errorCode = (Callback)(d, ptrTable, bSubindex);
+      if(Callback && Callback[bSubindex]){
+        errorCode = (Callback[bSubindex])(d, ptrTable, bSubindex);
         if(errorCode != OD_SUCCESSFUL)
         {
             return errorCode;
         }
-      }
-
-      /* Store value if requested with user defined function
-	     Function should return OD_ACCES_FAILED in case of store error */
+       }
+	 
+      /* TODO : Store dans NVRAM */
       if (ptrTable->pSubindex[bSubindex].bAccessType & TO_BE_SAVE){
-        return (*d->storeODSubIndex)(d, wIndex, bSubindex);
+        (*d->storeODSubIndex)(d, wIndex, bSubindex);
       }
       return OD_SUCCESSFUL;
     }else{
@@ -255,18 +262,24 @@ UNS32 _setODentry( CO_Data* d,
     }
 }
 
+const indextable * scanIndexOD (CO_Data* d, UNS16 wIndex, UNS32 *errorCode, ODCallback_t **Callback)
+{
+  return (*d->scanIndexOD)(wIndex, errorCode, Callback);
+}
+
 UNS32 RegisterSetODentryCallBack(CO_Data* d, UNS16 wIndex, UNS8 bSubindex, ODCallback_t Callback)
 {
-  UNS32 errorCode;
-  const indextable *odentry;
+UNS32 errorCode;
+ODCallback_t *CallbackList;
+const indextable *odentry;
 
-  odentry = d->scanIndexOD (d, wIndex, &errorCode);
-  if(errorCode == OD_SUCCESSFUL &&  bSubindex < odentry->bSubCount) 
-    odentry->pSubindex[bSubindex].callback = Callback;
+  odentry = scanIndexOD (d, wIndex, &errorCode, &CallbackList);
+  if(errorCode == OD_SUCCESSFUL  &&  CallbackList  &&  bSubindex < odentry->bSubCount) 
+    CallbackList[bSubindex] = Callback;
   return errorCode;
 }
 
-UNS32 _storeODSubIndex (CO_Data* d, UNS16 wIndex, UNS8 bSubindex)
+void _storeODSubIndex (CO_Data* d, UNS16 wIndex, UNS8 bSubindex)
 {
-  return OD_SUCCESSFUL;
+  //OD_Save_TO_EE(wIndex);
 }

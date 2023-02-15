@@ -528,18 +528,18 @@ sendOnePDOevent (CO_Data * d, UNS8 pdoNum)
                pdoNum);
       return 0;
     }
-  // TODO(eric): ensure this is useless
+  // TODO(eric): ensure this is work
   /*Compare new and old PDO */
-  //  if (d->PDO_status[pdoNum].last_message.cob_id == pdo.cob_id
-  //      && d->PDO_status[pdoNum].last_message.len == pdo.len
-  //      && memcmp(d->PDO_status[pdoNum].last_message.data,
-  //                  pdo.data, 8) == 0
-  //    )
-  //    {
-  //      /* No changes -> go to next pdo */
-  //      return 0;
-  //    }
-  //  else
+  if (d->PDO_status[pdoNum].last_message.cob_id == pdo.cob_id
+      && d->PDO_status[pdoNum].last_message.len == pdo.len
+      && memcmp(d->PDO_status[pdoNum].last_message.data,
+					pdo.data, 8) == 0
+    )
+    {
+      /* No changes -> go to next pdo */
+      return 0;
+    }
+  else
     {
 
       TIMEVAL EventTimerDuration;
@@ -837,3 +837,24 @@ PDOStop (CO_Data * d)
         offsetObjdict++;
       }
 }
+
+void
+PDOEnable (CO_Data * d, UNS8 pdoNum)
+{
+  UNS16 offsetObjdict;
+  if(!d->firstIndex->PDO_TRS)
+      return;
+  offsetObjdict = (UNS16) (d->firstIndex->PDO_TRS + pdoNum);
+  *(UNS32 *) d->objdict[offsetObjdict].pSubindex[1].pObject &= ~0x80000000;
+}
+
+void
+PDODisable (CO_Data * d, UNS8 pdoNum)
+{
+  UNS16 offsetObjdict;
+  if(!d->firstIndex->PDO_TRS)
+      return;
+  offsetObjdict = (UNS16) (d->firstIndex->PDO_TRS + pdoNum);
+  *(UNS32 *) d->objdict[offsetObjdict].pSubindex[1].pObject |= 0x80000000;
+}
+

@@ -120,7 +120,8 @@ void stopSYNC(CO_Data* d)
 /*!                                                                                                
 **                                                                                                 
 **                                                                                                 
-** @param d                                                                                
+** @param d                                                                                        
+** @param cob_id                                                                                   
 **                                                                                                 
 ** @return                                                                                         
 **/  
@@ -141,7 +142,8 @@ UNS8 sendSYNCMessage(CO_Data* d)
 /*!                                                                                                
 **                                                                                                 
 **                                                                                                 
-** @param d                                                                                  
+** @param d                                                                                        
+** @param cob_id                                                                                   
 **                                                                                                 
 ** @return                                                                                         
 **/  
@@ -156,7 +158,8 @@ UNS8 sendSYNC(CO_Data* d)
 /*!                                                                                                
 **                                                                                                 
 **                                                                                                 
-** @param d                                                                                    
+** @param d                                                                                        
+** @param m                                                                                        
 **                                                                                                 
 ** @return                                                                                         
 **/ 
