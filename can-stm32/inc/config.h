@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define NMT_MAX_NODE_ID 128
 #define SDO_TIMEOUT_MS 3000U
 #define MAX_NB_TIMER 8
+#define MIN_TIMER_TIMEOUT_US 5U
 
 // CANOPEN_BIG_ENDIAN is not defined
 #define CANOPEN_LITTLE_ENDIAN  1

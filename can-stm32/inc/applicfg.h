@@ -21,33 +21,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __APPLICFG_AVR__
-#define __APPLICFG_AVR__
+#ifndef __APPLICFG_H__
+#define __APPLICFG_H__
 
 #include <string.h>
 #include <stdio.h>
-
-
-/// Convert an integer to a string in hexadecimal format
-/// If you do not wants to use a lastCar, put lastCar = '\0' (end of string)
-/// ex : value = 0XABCDEF and lastCar = '\n'
-/// buf[0] = '0'
-/// buf[1] = 'X'
-/// buf[2] = 'A'
-/// ....
-/// buf[7] = 'F'
-/// buf[8] = '\n'
-/// buf[9] = '\0'
-extern char *
-hex_convert (char *buf, unsigned long value, char lastCar);
-
-/// Print the string to the serial port sci
-/// (sci takes the values SCI0 or SCI1)
-extern void printSCI_str (char sci, const char * str);
-
-/// Print the number in hexadecimal  to the serial port sci
-/// (sci takes the values SCI0 or SCI1)
-extern void printSCI_nbr (char sci, unsigned long nbr, char lastCar);
 
 // Integers
 #define INTEGER8 signed char
@@ -69,9 +47,7 @@ extern void printSCI_nbr (char sci, unsigned long nbr, char lastCar);
 #define UNS56  unsigned long long
 #define UNS64  unsigned long long
 
-// Reals
-#define REAL32 float
-#define REAL64 double
+
 
 // Reals
 #define REAL32	float
@@ -86,25 +62,17 @@ extern void printSCI_nbr (char sci, unsigned long nbr, char lastCar);
 // ---------------------
 //#define DEBUG_ERR_CONSOLE_ON
 #ifdef DEBUG_ERR_CONSOLE_ON
-#define MSG_ERR(num, str, val)      \
-          printf(num, ' ');	\
-          printf(str);		\
-          printf(val);		\
-          printf('\n');
+#define MSG_ERR(num, str, val)  LOG_E("0x%04X %s %d", num, str, val)
 #else
-#define MSG_ERR(num, str, val)
+#    define MSG_ERR(num, str, val)
 #endif
 
 /// Definition of MSG_WAR
 // ---------------------
 #ifdef DEBUG_WAR_CONSOLE_ON
-#define MSG_WAR(num, str, val)      \
-          printf(num, ' ');	\
-          printf(str);		\
-          printf(val);		\
-          printf('\n');
+#define MSG_WAR(num, str, val)  LOG_W("0x%04X %s %d", num, str, val)
 #else
-#define MSG_WAR(num, str, val)
+#    define MSG_WAR(num, str, val)
 #endif
 
 typedef void* CAN_HANDLE;

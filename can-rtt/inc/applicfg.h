@@ -2,7 +2,7 @@
 This file is part of CanFestival, a library implementing CanOpen Stack.
 
 Copyright (C): Edouard TISSERANT and Francis DUPIN
-AT91 Port: Peter CHRISTEN
+AVR Port: Andreas GLAUSER and Peter CHRISTEN
 
 See COPYING file for copyrights details.
 
@@ -55,12 +55,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "can.h"
 
-
 // MSG functions
 // not finished, the strings have to be placed to the flash and printed out 
 // using the printf_P function
 /// Definition of MSG_ERR
 // ---------------------
+//#define DEBUG_ERR_CONSOLE_ON
 #ifdef DEBUG_ERR_CONSOLE_ON
 #define MSG_ERR(num, str, val)  LOG_E("0x%04X %s %d", num, str, val)
 #else
@@ -78,8 +78,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 typedef void* CAN_HANDLE;
 
 typedef void* CAN_PORT;
-
-typedef struct rt_thread TASK_HANDLE;
 
 #endif
 
