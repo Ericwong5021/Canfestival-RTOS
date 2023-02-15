@@ -29,8 +29,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "data.h"
 
 // ---------  to be called by user app ---------
-extern void initTimer(void);
 extern UNS8 canSend(CAN_PORT notused, Message *m);
-extern UNS8 canChangeBaudRate(CAN_PORT port, char* baud);
 
 #endif

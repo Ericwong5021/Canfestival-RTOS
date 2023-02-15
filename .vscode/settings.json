@@ -3,6 +3,8 @@
         "Kconfig": "kconfig",
         "stm32f1_canfestival.h": "c",
         "can.h": "c",
-        "pdo_master.h": "c"
+        "pdo_master.h": "c",
+        "timer.h": "c",
+        "canopen_interface.h": "c"
     }
 }
