@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define OD_NOT_MAPPABLE              0x06040041
 #define OD_ACCES_FAILED              0x06060000
 #define OD_LENGTH_DATA_INVALID       0x06070010
-#define OD_NO_SUCH_SUBINDEX 	     0x06090011
+#define OD_NO_SUCH_SUBINDEX 	       0x06090011
 #define OD_VALUE_RANGE_EXCEEDED      0x06090030 /* Value range test result */
 #define OD_VALUE_TOO_LOW             0x06090031 /* Value range test result */
 #define OD_VALUE_TOO_HIGH            0x06090032 /* Value range test result */
@@ -72,8 +72,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     
 /** Status of the SDO transmission
  */
-#define SDO_RESET                0x0      /* Transmission not started. Init state. */
-#define SDO_FINISHED             0x1      /* data are available */                          
+#define  SDO_RESET                0x0      /* Transmission not started. Init state. */
+#define  SDO_FINISHED             0x1      /* data are available */                          
 #define	SDO_ABORTED_RCV          0x80     /* Received an abort message. Data not available */
 #define	SDO_ABORTED_INTERNAL     0x85     /* Aborted but not because of an abort message. */
 #define	SDO_DOWNLOAD_IN_PROGRESS 0x2 
