@@ -745,16 +745,16 @@ UNS8 sendSDOabort (CO_Data* d, UNS8 whoami, UNS8 CliServNbr, UNS16 index, UNS8 s
 UNS8 proceedSDO (CO_Data* d, Message *m)
 {
 	UNS8 err;
-	UNS8 cs;
-	UNS8 line;
+	UNS8 cs = 0;
+	UNS8 line = 0;
 	UNS32 nbBytes; 		/* received or to be transmited. */
 	UNS8 nodeId = 0;  	/* The node Id of the server if client otherwise unused */
-	UNS8 CliServNbr;
+	UNS8 CliServNbr = 0;
 	UNS8 whoami = SDO_UNKNOWN;  /* SDO_SERVER or SDO_CLIENT.*/
 	UNS32 errorCode; /* while reading or writing in the local object dictionary.*/
 	UNS8 data[8];    /* data for SDO to transmit */
-	UNS16 index;
-	UNS8 subIndex;
+	UNS16 index = 0;
+	UNS8 subIndex = 0;
 	UNS32 abortCode;
 	UNS32 i;
 	UNS8	j;
@@ -2030,7 +2030,7 @@ UNS8 writeNetworkDictCallBackAI (CO_Data* d, UNS8 nodeId, UNS16 index,
 	UNS16 lastIndex;
 	UNS16 offset;
 	UNS8 nodeIdServer;
-	UNS8 i;
+//	UNS8 i;
 
 	ret = _writeNetworkDict (d, nodeId, index, subIndex, count, dataType, data, Callback, endianize, useBlockMode);
 	if(ret == 0xFE)
@@ -2042,7 +2042,7 @@ UNS8 writeNetworkDictCallBackAI (CO_Data* d, UNS8 nodeId, UNS16 index,
 			MSG_ERR(0x1AC6, "writeNetworkDict : No SDO client index found", 0);
 			return 0xFF;
 		}
-		i = 0;
+//		i = 0;
 		while (offset <= lastIndex)
 		{
 			if (d->objdict[offset].bSubCount <= 3)
@@ -2192,7 +2192,7 @@ UNS8 readNetworkDictCallbackAI (CO_Data* d, UNS8 nodeId, UNS16 index, UNS8 subIn
 	UNS16 lastIndex;
 	UNS16 offset;
 	UNS8 nodeIdServer;
-	UNS8 i;
+//	UNS8 i;
 
 	ret = _readNetworkDict (d, nodeId, index, subIndex, dataType, Callback, useBlockMode);
 	if(ret == 0xFE)
@@ -2204,7 +2204,7 @@ UNS8 readNetworkDictCallbackAI (CO_Data* d, UNS8 nodeId, UNS16 index, UNS8 subIn
 			MSG_ERR(0x1AC6, "writeNetworkDict : No SDO client index found", 0);
 			return 0xFF;
 		}
-		i = 0;
+//		i = 0;
 		while (offset <= lastIndex)
 		{
 			if (d->objdict[offset].bSubCount <= 3)

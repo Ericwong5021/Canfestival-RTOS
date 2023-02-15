@@ -20,10 +20,9 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __timers_h__
-#define __timers_h__
+#ifndef __timer_h__
+#define __timer_h__
 
-#include <timerscfg.h>
 #include <applicfg.h>
 
 #define TIMER_HANDLE INTEGER16
@@ -37,6 +36,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define TIMER_TRIG_PERIOD 3
 
 #define TIMER_NONE -1
+// Whatever your microcontroller, the timer wont work if
+// TIMEVAL is not at least on 32 bits
+#define TIMEVAL UNS32
+
+// The timer of the AVR counts from 0000 to 0xFFFF in CTC mode (it can be
+// shortened setting OCR3A eg. to get 2ms instead of 2.048ms)
+//#define TIMEVAL_MAX 0xFFFF
+#define TIMEVAL_MAX 0xFFFFFFFF
+// The timer is incrementing every 4 us.
+//#define MS_TO_TIMEVAL(ms) (ms * 250)
+//#define US_TO_TIMEVAL(us) (us>>2)
+ 
+//// The timer is incrementing every 1 us.
+//#define MS_TO_TIMEVAL(ms) ((ms) * 1000)  //change @bruce
+//#define US_TO_TIMEVAL(us) ((us) * 1)     //change @bruce
+
+// The timer is incrementing every 1 ms.
+#define MS_TO_TIMEVAL(ms) ((ms))  //change @bruce
+#define US_TO_TIMEVAL(us) ((us)/1000)     //change @bruce
 
 typedef void (*TimerCallback_t)(CO_Data* d, UNS32 id);
 
@@ -87,6 +105,6 @@ void setTimer(TIMEVAL value);
  * @brief Get the time elapsed since latest timer occurence.
  * @return time elapsed since latest timer occurence
  */
-TIMEVAL getElapsedTime(void);
+extern TIMEVAL getElapsedTime(void);
 
-#endif /* #define __timers_h__ */
+#endif /* #define __timer_h__ */

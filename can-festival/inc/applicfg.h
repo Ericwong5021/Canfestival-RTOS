@@ -2,7 +2,7 @@
 This file is part of CanFestival, a library implementing CanOpen Stack.
 
 Copyright (C): Edouard TISSERANT and Francis DUPIN
-AT91 Port: Peter CHRISTEN
+AVR Port: Andreas GLAUSER and Peter CHRISTEN
 
 See COPYING file for copyrights details.
 
@@ -79,31 +79,32 @@ extern void printSCI_nbr (char sci, unsigned long nbr, char lastCar);
 
 #include "can.h"
 
-
+// MSG functions
+// not finished, the strings have to be placed to the flash and printed out 
+// using the printf_P function
 /// Definition of MSG_ERR
 // ---------------------
+//#define DEBUG_ERR_CONSOLE_ON
 #ifdef DEBUG_ERR_CONSOLE_ON
-#    define MSG_ERR(num, str, val)            \
-          initSCI_0();                        \
-          printSCI_nbr(SCI0, num, ' ');       \
-          /* large printing on console  */    \
-          printSCI_str(SCI0, str);            \
-          printSCI_nbr(SCI0, val, '\n');
+#define MSG_ERR(num, str, val)      \
+          printf(num, ' ');	\
+          printf(str);		\
+          printf(val);		\
+          printf('\n');
 #else
-#    define MSG_ERR(num, str, val)
+#define MSG_ERR(num, str, val)
 #endif
 
 /// Definition of MSG_WAR
 // ---------------------
 #ifdef DEBUG_WAR_CONSOLE_ON
-#    define MSG_WAR(num, str, val)          \
-        initSCI_0();                        \
-        printSCI_nbr(SCI0, num, ' ');       \
-        /* large printing on console  */    \
-        printSCI_str(SCI0, str);            \
-        printSCI_nbr(SCI0, val, '\n');
+#define MSG_WAR(num, str, val)      \
+          printf(num, ' ');	\
+          printf(str);		\
+          printf(val);		\
+          printf('\n');
 #else
-#    define MSG_WAR(num, str, val)
+#define MSG_WAR(num, str, val)
 #endif
 
 typedef void* CAN_HANDLE;

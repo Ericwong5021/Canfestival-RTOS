@@ -352,8 +352,7 @@ proceedPDO (CO_Data * d, Message * m)
                 /* RTR_SYNC means data prepared at SYNC, transmitted on RTR */
                 else if ((*pTransmissionType == TRANS_RTR_SYNC))
                   {
-                    if (d->PDO_status[numPdo].
-                        transmit_type_parameter & PDO_RTR_SYNC_READY)
+                    if (d->PDO_status[numPdo].transmit_type_parameter & PDO_RTR_SYNC_READY)
                       {
                         /*Data ready, just send */
                         canSend (d->canHandle,
@@ -529,18 +528,18 @@ sendOnePDOevent (CO_Data * d, UNS8 pdoNum)
                pdoNum);
       return 0;
     }
-
+  // TODO(eric): ensure this is useless
   /*Compare new and old PDO */
-  if (d->PDO_status[pdoNum].last_message.cob_id == pdo.cob_id
-      && d->PDO_status[pdoNum].last_message.len == pdo.len
-      && memcmp(d->PDO_status[pdoNum].last_message.data,
-					pdo.data, 8) == 0
-    )
-    {
-      /* No changes -> go to next pdo */
-      return 0;
-    }
-  else
+  //  if (d->PDO_status[pdoNum].last_message.cob_id == pdo.cob_id
+  //      && d->PDO_status[pdoNum].last_message.len == pdo.len
+  //      && memcmp(d->PDO_status[pdoNum].last_message.data,
+  //                  pdo.data, 8) == 0
+  //    )
+  //    {
+  //      /* No changes -> go to next pdo */
+  //      return 0;
+  //    }
+  //  else
     {
 
       TIMEVAL EventTimerDuration;
@@ -549,11 +548,9 @@ sendOnePDOevent (CO_Data * d, UNS8 pdoNum)
       MSG_WAR (0x306A, "Changes TPDO number : ", pdoNum);
       /* Changes detected -> transmit message */
       EventTimerDuration =
-        *(UNS16 *) d->objdict[offsetObjdict].pSubindex[5].
-        pObject;
+        *(UNS16 *) d->objdict[offsetObjdict].pSubindex[5].pObject;
       InhibitTimerDuration =
-        *(UNS16 *) d->objdict[offsetObjdict].pSubindex[3].
-        pObject;
+        *(UNS16 *) d->objdict[offsetObjdict].pSubindex[3].pObject;
 
       /* Start both event_timer and inhibit_timer */
       if (EventTimerDuration)
@@ -638,14 +635,14 @@ _sendPDOevent (CO_Data * d, UNS8 isSyncEvent)
       memset(&pdo, 0, sizeof(pdo));
       while (offsetObjdict <= lastIndex)
         {
+         // delay_ms(1); // TODO(eric): figure out why delay here?
           switch (status)
             {
             case state3:
               if ( /* bSubCount always 5 with objdictedit -> check disabled */
                    /*d->objdict[offsetObjdict].bSubCount < 5 ||*/
                    /* check if TPDO is not valid */
-                   *(UNS32 *) d->objdict[offsetObjdict].pSubindex[1].
-                   pObject & 0x80000000)
+                   *(UNS32 *) d->objdict[offsetObjdict].pSubindex[1].pObject & 0x80000000)
                 {
                   MSG_WAR (0x3960, "Not a valid PDO ", 0x1800 + pdoNum);
                   /*Go next TPDO */

@@ -2,7 +2,7 @@
 This file is part of CanFestival, a library implementing CanOpen Stack.
 
 Copyright (C): Edouard TISSERANT and Francis DUPIN
-AT91 Port: Peter CHRISTEN
+AVR Port: Andreas GLAUSER and Peter CHRISTEN
 
 See COPYING file for copyrights details.
 
@@ -27,10 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "applicfg.h"
 #include "data.h"
-#include "objdict.h"
 
 // ---------  to be called by user app ---------
-void initTimer(void);
-UNS8 canSend(CAN_PORT notused, Message *m);
+extern void initTimer(void);
+extern UNS8 canSend(CAN_PORT notused, Message *m);
+extern UNS8 canChangeBaudRate(CAN_PORT port, char* baud);
 
 #endif

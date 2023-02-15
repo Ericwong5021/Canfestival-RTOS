@@ -2,7 +2,7 @@
 This file is part of CanFestival, a library implementing CanOpen Stack.
 
 Copyright (C): Edouard TISSERANT and Francis DUPIN
-AT91 Port: Peter CHRISTEN
+AVR Port: Andreas GLAUSER and Peter CHRISTEN
 
 See COPYING file for copyrights details.
 
@@ -24,42 +24,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-//#include "compiler.h"
-
-#ifdef  __IAR_SYSTEMS_ICC__
-#include <intrinsics.h>
-#include <atmel/ioat91sam7x256.h>
-#define __inline inline
-#include "atmel/lib_AT91SAM7X256.h"
-//#include "iar.h"
-#else	// GCC
-#include <avr\io.h>
-#include <avr\interrupt.h>
-#include <inttypes.h>
-#include <avr\sleep.h>
-#include <avr\wdt.h>
-#endif	// GCC
-
-#define WD_SLEEP
-
-#define	FALSE					0
-#define	TRUE					1
-
-// Needed defines by Atmel lib
-#define AT91C_MASTER_CLOCK      48000000UL    // Master Clock
-#define CAN_BAUDRATE 125
-
 // Needed defines by Canfestival lib
-#define MAX_CAN_BUS_ID 1
-#define SDO_MAX_LENGTH_TRANSFER 32
+#define SDO_MAX_LENGTH_TRANSFER 128
+#define SDO_BLOCK_SIZE 40
 #define SDO_MAX_SIMULTANEOUS_TRANSFERS 1
 #define NMT_MAX_NODE_ID 128
 #define SDO_TIMEOUT_MS 3000U
 #define MAX_NB_TIMER 8
 
 // CANOPEN_BIG_ENDIAN is not defined
-#define CANOPEN_LITTLE_ENDIAN 1
-
+#define CANOPEN_LITTLE_ENDIAN  1
 #define US_TO_TIMEVAL_FACTOR 8
 
 #define REPEAT_SDO_MAX_SIMULTANEOUS_TRANSFERS_TIMES(repeat)\

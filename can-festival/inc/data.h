@@ -45,6 +45,9 @@ typedef struct struct_CO_Data CO_Data;
 #include "nmtSlave.h"
 #include "nmtMaster.h"
 #include "emcy.h"
+#include  "app.h"
+#include "stm32f1_canfestival.h"	//TODO(eric): change to common file name
+
 #ifdef CO_ENABLE_LSS
 #include "lss.h"
 #endif
