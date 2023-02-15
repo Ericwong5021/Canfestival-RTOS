@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define SDO_BLOCK_SIZE 40
 #define SDO_MAX_SIMULTANEOUS_TRANSFERS 1
 #define NMT_MAX_NODE_ID 128
-#define SDO_TIMEOUT_MS 3000U
+#define SDO_TIMEOUT_MS 300U
 #define MAX_NB_TIMER 8
 #define MIN_TIMER_TIMEOUT_US 5U
 

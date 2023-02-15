@@ -39,6 +39,7 @@
 #include "sysdep.h"
 
 
+extern void CanOpenDeviceBootUp(unsigned char NodeId);
 void ConsumerHeartbeatAlarm(CO_Data* d, UNS32 id);
 void ProducerHeartbeatAlarm(CO_Data* d, UNS32 id);
 UNS32 OnHearbeatProducerUpdate(CO_Data* d, const indextable * unused_indextable, UNS8 unused_bSubindex);
@@ -367,7 +368,12 @@ void lifeGuardStop(CO_Data* d)
 
 
 void _heartbeatError(CO_Data* d, UNS8 heartbeatID){}
-void _post_SlaveBootup(CO_Data* d, UNS8 SlaveID){}
+//´ÓÕ¾ÉÏÏß´¦Àíº¯Êý
+void _post_SlaveBootup(CO_Data* d, UNS8 SlaveID)
+{
+	CanOpenDeviceBootUp(SlaveID);
+	masterSendNMTstateChange(&PDO_Master_Data,SlaveID,NMT_Start_Node);	//·¢PDOÆô¶¯Ö¸Áî
+}
 void _post_SlaveStateChange(CO_Data* d, UNS8 nodeId, e_nodeState newNodeState){}
 void _nodeguardError(CO_Data* d, UNS8 id){}
 

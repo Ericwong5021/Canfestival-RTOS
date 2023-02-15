@@ -3,29 +3,27 @@
 #ifndef __STM32F1_CANFESTIVAL_H__
 #define __STM32F1_CANFESTIVAL_H__
  
-#include "canfestival.h" 
-#include "PDO_Master.h" 
-#include "mytimer.h" 	
-#include "timer.h"
+#include "canfestival.h"
+#include "PDO_Master.h"
 
+extern unsigned char Can_Send_Msg(Message *msg);
 
-
-typedef struct 
+typedef struct
 {
-	  u16 cmd;      //0x0000 通用指令 0x0100 电机A轴指令，0x0200 电机B轴指令         
-	  u16 RunStatus;            
-	  u32 ErrCode;
-	  u16 RunMode;
-	  u16 Meteri_Null;
-	  u16 StepLen;               //调幅丝杆导程
-	  u16 AxisEn;           //按位控制轴使能，bit0表示0轴，bit1表示1轴 
-	  u16 DigtalOut;
-	  u16 DigtalIn;
-	  u16 OutMode;
-	  u16 BackDefVal; 
-	  u32 TimeOut;            //求物料超时报警
-	UNS8 ReceiveData[20];
-	UNS8 TransmitData[20];
+	unsigned short cmd;      //0x0000 脥篓脫脙脰赂脕卯 0x0100 碌莽禄煤A脰谩脰赂脕卯拢卢0x0200 碌莽禄煤B脰谩脰赂脕卯
+	unsigned short RunStatus;
+	unsigned long ErrCode;
+	unsigned short RunMode;
+	unsigned short Meteri_Null;
+	unsigned short StepLen;               //碌梅路霉脣驴赂脣碌录鲁脤
+	unsigned short AxisEn;           //掳麓脦禄驴脴脰脝脰谩脢鹿脛脺拢卢bit0卤铆脢戮0脰谩拢卢bit1卤铆脢戮1脰谩
+	unsigned short DigtalOut;
+	unsigned short DigtalIn;
+	unsigned short OutMode;
+	unsigned short BackDefVal;
+	unsigned long TimeOut;            //脟贸脦茂脕脧鲁卢脢卤卤篓戮炉
+	unsigned char ReceiveData[20];
+	unsigned char TransmitData[20];
 }MASTER_PARA;
 
 extern MASTER_PARA Master;
@@ -104,7 +102,8 @@ extern UNS32 getElapsedTime(void);
 void OD_Save_TO_EE(UNS16 wIndex);
 
 void Sys_ParaInit(void);
-
+void SDOCallback_t_Index1800_Subindex0(CO_Data* d, UNS8 nodeId);
+void SDO_Write_Test();
 
 #endif
 

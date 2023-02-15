@@ -1347,7 +1347,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 				if (!err) {
 					/* The line *must* be released by the core program. */
 					StopSDO_TIMER(line)
-						d->transfers[line].state = SDO_ABORTED_RCV;
+						d->transfers[line].state = SDO_ABORTED_RCV;	// TODO(eric): 如果没收到会阻塞,之前是直接SDO_FINISHED
 					d->transfers[line].abortCode = abortCode;
 					MSG_WAR(0x3AB0, "SD0. Received SDO abort. Line state ABORTED. Code : ", abortCode);
 					if(d->transfers[line].Callback) (*d->transfers[line].Callback)(d,nodeId);
@@ -1970,7 +1970,8 @@ INLINE UNS8 _writeNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index,
 
 	d->transfers[line].Callback = Callback;
 
-	err = sendSDO(d, SDO_CLIENT, CliNbr, buf);
+//	err = sendSDO(d, SDO_CLIENT, CliNbr, buf);
+	sendSDO(d, SDO_CLIENT, CliNbr, buf);//TODO: SDO不阻塞，直接跳过
 	if (err) {
 		MSG_ERR(0x1AD1, "SDO. Error while sending SDO to node : ", nodeId);
 		/* release the line */

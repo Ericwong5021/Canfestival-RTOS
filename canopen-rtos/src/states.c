@@ -83,7 +83,7 @@ void canDispatch(CO_Data* d, Message *m)
 		case PDO3rx:
 		case PDO4tx:
 		case PDO4rx:
-			if (d->CurrentCommunicationState.csPDO)
+			if (d->CurrentCommunicationState.csPDO)	// TODO(eric): dispatch pdo message
 				proceedPDO(d,m);
 			break;
 		case SDOtx:

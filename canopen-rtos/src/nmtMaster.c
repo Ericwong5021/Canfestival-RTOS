@@ -93,7 +93,7 @@ UNS8 masterSendNMTnodeguard(CO_Data* d, UNS8 nodeId)
 **/
 UNS8 masterRequestNodeState(CO_Data* d, UNS8 nodeId)
 {
-  /* FIXME: should warn for bad toggle bit. */
+  /* fix: should warn for bad toggle bit. */
 
   /* NMTable configuration to indicate that the master is waiting
     for a Node_Guard frame from the slave whose node_id is ID
