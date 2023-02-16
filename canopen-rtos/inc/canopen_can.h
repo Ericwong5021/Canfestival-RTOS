@@ -1,8 +1,7 @@
 /*
-This file is part of CanFestival, a library implementing CanOpen Stack.
+This file is part of CanFestival, a library implementing CanOpen Stack. 
 
 Copyright (C): Edouard TISSERANT and Francis DUPIN
-AVR Port: Andreas GLAUSER and Peter CHRISTEN
 
 See COPYING file for copyrights details.
 
@@ -21,14 +20,24 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-#ifndef __CAN_CANFESTIVAL__
-#define __CAN_CANFESTIVAL__
+#ifndef __can_h__
+#define __can_h__
 
 #include "canopen_applicfg.h"
-#include "canopen_data.h"
 
-// ---------  to be called by user app ---------
-extern UNS8 canSend(CAN_PORT notused, Message *m);
+/** 
+ * @brief The CAN message structure 
+ * @ingroup can
+ */
+typedef struct {
+  UNS16 cob_id;	/**< message's ID */
+  UNS8 rtr;		/**< remote transmission request. (0 if not rtr message, 1 if rtr message) */
+  UNS8 len;		/**< message's length (0 to 8) */
+  UNS8 data[8]; /**< message's datas */
+} Message;
 
-#endif
+#define Message_Initializer {0,0,0,{0,0,0,0,0,0,0,0}}
+
+typedef UNS8 (*canSend_t)(Message *);
+
+#endif /* __can_h__ */

@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "Kconfig": "kconfig",
+        "users_canfestival.h": "c",
+        "canopen_data.h": "c"
+    }
+}

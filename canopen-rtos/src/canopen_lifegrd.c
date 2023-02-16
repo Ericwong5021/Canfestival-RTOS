@@ -368,7 +368,7 @@ void lifeGuardStop(CO_Data* d)
 
 
 void _heartbeatError(CO_Data* d, UNS8 heartbeatID){}
-//从站上线处理函数
+//麓脫脮戮脡脧脧脽麓娄脌铆潞炉脢媒
 void _post_SlaveBootup(CO_Data* d, UNS8 SlaveID)
 {
 	CanOpenDeviceBootUp(SlaveID);

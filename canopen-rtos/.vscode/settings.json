@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "Kconfig": "kconfig",
+        "canopen_dcf.h": "c",
+        "canopen_sysdep.h": "c",
+        "canopen_config.h": "c",
+        "canopen_lss.h": "c",
+        "canopen_emcy.h": "c",
+        "canopen_data.h": "c"
+    }
+}

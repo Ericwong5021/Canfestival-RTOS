@@ -4,7 +4,7 @@
 #ifndef PDO_MASTER_H
 #define PDO_MASTER_H
 
-#include "data.h"
+#include "canopen_data.h"
 
 /* Prototypes of function provided by object dictionnary */
 UNS32 PDO_Master_valueRangeTest (UNS8 typeValue, void * value);
