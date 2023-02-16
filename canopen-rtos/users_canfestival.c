@@ -6,16 +6,16 @@
  */
 #include "users_canfestival.h"
 /************************** Modul variables **********************************/
-// TODO canopen移植: 改为主站节点的字典名称,所有主站的接口函数都会引用这个指针
+// canopen移植: 改为主站节点的字典名称,所有主站的接口函数都会引用这个指针
 CO_Data *master_node = &PDO_Master_Data;
 
-// TODO canopen移植函数: canopen报文解析函数,放在CAN接收中断里
+// canopen移植: canopen报文解析函数,放在CAN接收中断里
 void Can_Recv_Msg(Message *msg)
 {
     canDispatch(master_node, msg);
 }
 
-// TODO canopen移植: canopen协议的CAN发送函数,这里需要调用CAN外设的发送函数
+// canopen移植: canopen协议的CAN发送函数,这里需要调用CAN外设的发送函数
 unsigned char Can_Send_Msg(Message *msg)
 {
     char rtn = 0;
@@ -35,7 +35,7 @@ unsigned int TimeCNT = 0;             // 时间计数
 unsigned int NextTime = 0;            // 下一次触发时间计数
 unsigned int TIMER_MAX_COUNT = 70000; // 最大的时间计数
 
-// TODO canopen移植: 在目标芯片上开一个1毫秒的定时器，每隔1ms调用一次这个函数
+// canopen移植: 在目标芯片上开一个1毫秒的定时器，每隔1ms调用一次这个函数
 void TimerForCan(void)
 {
     static int TimeCNT = 0;
@@ -66,7 +66,7 @@ UNS32 getElapsedTime(void)
     return ret;
 }
 
-// TODO canopen移植: 初始化CANOpen主站,同时复位总线上所有其他从站设备
+// canopen移植: 初始化CANOpen主站,同时复位总线上所有其他从站设备
 void canopen_start()
 {
     setNodeId(master_node, 0x00);
@@ -75,7 +75,7 @@ void canopen_start()
     setState(master_node, Operational);
 }
 
-// TODO canopen移植: PDO同步帧调用这个函数,根据需要的同步周期调用 (硬件手动发送比协议栈发送稳定)
+// canopen移植: PDO同步帧调用这个函数,根据需要的同步周期调用 (硬件手动发送比协议栈发送稳定)
 void CANSendSyc(void)
 {
     Message SycMesg;
@@ -85,14 +85,14 @@ void CANSendSyc(void)
     Can_Send_Msg(&SycMesg);
 }
 
-// TODO canopen移植: 从站上线会调用这个函数
+// canopen移植: 从站上线会调用这个函数
 void CanOpenDeviceBootUp(unsigned char NodeId)
 {
     // CAN_NewSlaveBootup(NodeId); // put your operate function here
     CanOpenChangeNMT(NodeId, NMT_Start_Node);
 }
 
-// TODO canopen移植: 切换从站状态
+// canopen移植: 切换从站状态
 void CanOpenChangeNMT(char NodeID, int NodeState)
 {
     masterSendNMTstateChange(master_node, NodeID, NodeState); // 发PDO启动指令
@@ -110,13 +110,13 @@ void SDOCallback_t_Index1800_Subindex0(CO_Data *d, UNS8 nodeId)
     // printf("abortCode = %ld, size = %ld, data = %d\r\n", abortCode, size, data);
 }
 
-// TODO canopen移植: canopen字典读取函数,读取的数据由回调函数返回
+// canopen移植: canopen字典读取函数,读取的数据由回调函数返回
 unsigned char CanOpen_SDO_Read(char id, short index, char sub, char type)
 {
     return readNetworkDictCallback(master_node, id, index, sub, type, SDOCallback_t_Index1800_Subindex0, 0);
 }
 
-// TODO canopen移植: canopen字典写入函数,写入的结果由回调函数返回
+// canopen移植: canopen字典写入函数,写入的结果由回调函数返回
 unsigned char Canopen_SDO_Write(char id, short index, char sub, char type, long data)
 {
     char size;
