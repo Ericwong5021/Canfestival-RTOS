@@ -5,6 +5,7 @@
         "can.h": "c",
         "pdo_master.h": "c",
         "timer.h": "c",
-        "canopen_interface.h": "c"
+        "canopen_interface.h": "c",
+        "canfestival.h": "c"
     }
 }

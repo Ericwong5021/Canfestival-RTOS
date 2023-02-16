@@ -1,134 +1,120 @@
 /*
- * @Author: Ericwong 
- * @Date: 2023-02-15 18:33:06 
+ * @Author: Ericwong
+ * @Date: 2023-02-15 18:33:06
  * @Last Modified by: Ericwong
  * @Last Modified time: 2023-02-15 18:33:42
  */
 #include "stm32f1_canfestival.h"
 /************************** Modul variables **********************************/
-// Store the last timer value to calculate the elapsed time
-static TIMEVAL last_time_set = TIMEVAL_MAX;
+// TODO canopenç§»æ¤: æ”¹ä¸ºä¸»ç«™èŠ‚ç‚¹çš„å­—å…¸åç§°,æ‰€æœ‰ä¸»ç«™çš„æ¥å£å‡½æ•°éƒ½ä¼šå¼•ç”¨è¿™ä¸ªæŒ‡é’ˆ
+CO_Data *master_node = &PDO_Master_Data;
 
-extern void CAN_SDO_Update(unsigned char *data, unsigned long size, unsigned long error);
+// TODO canopenç§»æ¤å‡½æ•°: canopenæŠ¥æ–‡è§£æå‡½æ•°,æ”¾åœ¨CANæ¥æ”¶ä¸­æ–­é‡Œ
+void Can_Recv_Msg(Message *msg)
+{
+    canDispatch(master_node, msg);
+}
 
-unsigned int TimeCNT = 0;			  // Ê±¼ä¼ÆÊı
-unsigned int NextTime = 0;			  // ÏÂÒ»´Î´¥·¢Ê±¼ä¼ÆÊı
-unsigned int TIMER_MAX_COUNT = 70000; // ×î´óµÄÊ±¼ä¼ÆÊı
-
-// TODO canopenÒÆÖ²º¯Êı: µ÷ÓÃCANÍâÉèµÄ·¢ËÍº¯Êı,·¢ËÍÒ»×éÊı¾İ,±ê×¼Ö¡¸ñÊ½·¢ËÍ
+// TODO canopenç§»æ¤: canopenåè®®çš„CANå‘é€å‡½æ•°,è¿™é‡Œéœ€è¦è°ƒç”¨CANå¤–è®¾çš„å‘é€å‡½æ•°
 unsigned char Can_Send_Msg(Message *msg)
 {
-	char rtn = 0;
+    char rtn = 0;
 
-	return rtn;
-	// ·µ»Ø0, ·¢ËÍ³É¹¦
-	// ÆäËû , ·¢ËÍÊ§°Ü
-}
-
-// TODO canopenÒÆÖ²: ÔÚÄ¿±êĞ¾Æ¬ÉÏ¿ªÒ»¸ö1ºÁÃëµÄ¶¨Ê±Æ÷£¬Ã¿¸ô1msµ÷ÓÃÒ»´ÎÕâ¸öº¯Êı
-void TimerForCan(void)
-{
-	static int TimeCNT = 0;
-	TimeCNT++;
-	if (TimeCNT >= TIMER_MAX_COUNT)
-	{
-		TimeCNT = 0;
-	}
-	if (TimeCNT == NextTime)
-	{
-		TimeDispatch(); // ¶¨Ê±Ê±¼äµ½£¬Ö´ĞĞÊ±¼äÏà¹ØµÄ·Ö·¢ÈÎÎñ
-	}
-}
-
-// TODO canopenÒÆÖ²: PDOÍ¬²½Ö¡µ÷ÓÃÕâ¸öº¯Êı,¸ù¾İĞèÒªµÄÍ¬²½ÖÜÆÚµ÷ÓÃ (Ó²¼şÊÖ¶¯·¢ËÍ±ÈĞ­ÒéÕ»·¢ËÍÎÈ¶¨)
-void CANSendSyc(void)
-{
-	Message SycMesg;
-	SycMesg.cob_id = 0x80;
-	SycMesg.len = 0;
-	SycMesg.rtr = 0;
-	Can_Send_Msg(&SycMesg);
-}
-// TODO canopenÒÆÖ²: ÔÚÄ¿±êĞ¾Æ¬ÉÏ¿ªÒ»¸ö1ºÁÃëµÄ¶¨Ê±Æ÷£¬Ã¿¸ô1msµ÷ÓÃÒ»´ÎÕâ¸öº¯Êı
-void TimerForCan(void)
-{
-	TimeCNT++;
-
-	if (TimeCNT >= TIMER_MAX_COUNT)
-	{
-		TimeCNT = 0;
-	}
-	if (TimeCNT == NextTime)
-	{
-		TimeDispatch(); // ¶¨Ê±Ê±¼äµ½£¬Ö´ĞĞÊ±¼äÏà¹ØµÄ·Ö·¢ÈÎÎñ
-	}
+    return rtn;
+    // è¿”å›0, å‘é€æˆåŠŸ
+    // å…¶ä»– , å‘é€å¤±è´¥
 }
 
 UNS8 canSend(CAN_PORT notused, Message *m)
 {
-	return Can_Send_Msg(m);
+    return Can_Send_Msg(m);
+}
+
+// TODO canopenç§»æ¤: PDOåŒæ­¥å¸§è°ƒç”¨è¿™ä¸ªå‡½æ•°,æ ¹æ®éœ€è¦çš„åŒæ­¥å‘¨æœŸè°ƒç”¨ (ç¡¬ä»¶æ‰‹åŠ¨å‘é€æ¯”åè®®æ ˆå‘é€ç¨³å®š)
+void CANSendSyc(void)
+{
+    Message SycMesg;
+    SycMesg.cob_id = 0x80;
+    SycMesg.len = 0;
+    SycMesg.rtr = 0;
+    Can_Send_Msg(&SycMesg);
+}
+unsigned int TimeCNT = 0;             // æ—¶é—´è®¡æ•°
+unsigned int NextTime = 0;            // ä¸‹ä¸€æ¬¡è§¦å‘æ—¶é—´è®¡æ•°
+unsigned int TIMER_MAX_COUNT = 70000; // æœ€å¤§çš„æ—¶é—´è®¡æ•°
+// Store the last timer value to calculate the elapsed time
+static TIMEVAL last_time_set = TIMEVAL_MAX;
+
+// TODO canopenç§»æ¤: åœ¨ç›®æ ‡èŠ¯ç‰‡ä¸Šå¼€ä¸€ä¸ª1æ¯«ç§’çš„å®šæ—¶å™¨ï¼Œæ¯éš”1msè°ƒç”¨ä¸€æ¬¡è¿™ä¸ªå‡½æ•°
+void TimerForCan(void)
+{
+    static int TimeCNT = 0;
+    TimeCNT++;
+    if (TimeCNT >= TIMER_MAX_COUNT)
+    {
+        TimeCNT = 0;
+    }
+    if (TimeCNT == NextTime)
+    {
+        TimeDispatch(); // å®šæ—¶æ—¶é—´åˆ°ï¼Œæ‰§è¡Œæ—¶é—´ç›¸å…³çš„åˆ†å‘ä»»åŠ¡
+    }
 }
 
 void setTimer(UNS32 value)
 {
-	NextTime = (TimeCNT + value) % TIMER_MAX_COUNT;
+    NextTime = (TimeCNT + value) % TIMER_MAX_COUNT;
 }
 
 UNS32 getElapsedTime(void)
 {
-	int ret = 0;
+    int ret = 0;
 
-	ret = TimeCNT > last_time_set ? TimeCNT - last_time_set : TimeCNT + TIMER_MAX_COUNT - last_time_set;
-	last_time_set = TimeCNT;
-	return ret;
+    ret = TimeCNT > last_time_set ? TimeCNT - last_time_set : TimeCNT + TIMER_MAX_COUNT - last_time_set;
+    last_time_set = TimeCNT;
+    return ret;
 }
 
 Message my_message;
 
-/* SDO±¨ÎÄ¶ÁÈ¡³É¹¦»Øµ÷º¯Êı */
+/* SDOæŠ¥æ–‡è¯»å–æˆåŠŸå›è°ƒå‡½æ•° */
 void SDOCallback_t_Index1800_Subindex0(CO_Data *d, UNS8 nodeId)
 {
-	UNS8 data[8];
-	UNS32 size;
-	UNS32 abortCode;
+    UNS8 data[8];
+    UNS32 size;
+    UNS32 abortCode;
 
-	getReadResultNetworkDict(d, nodeId, data, &size, &abortCode);
+    getReadResultNetworkDict(d, nodeId, data, &size, &abortCode);
 
-	CAN_SDO_Update(data, size, abortCode);
-	// printf("abortCode = %ld, size = %ld, data = %d\r\n", abortCode, size, data);
-}
-
-void SDO_Write_Test()
-{
-	UNS32 tt[1] = {10};
-	writeNetworkDictCallBack(&PDO_Master_Data, 0x1f, 0x2000, 0x00, 4, int32, tt, SDOCallback_t_Index1800_Subindex0, 0);
-	// writeNetworkDictCallBack(&PDO_Master_Data,0x01,0x2000,0x00,4,int32,tt,SDOCallback_t_Index1800_Subindex0,0);
+    // printf("abortCode = %ld, size = %ld, data = %d\r\n", abortCode, size, data);
 }
 
 extern unsigned long PDO_Master_obj1006;
 
-
-// TODO canopenÒÆÖ²: ³õÊ¼»¯CANOpenÖ÷Õ¾,Í¬Ê±¸´Î»×ÜÏßÉÏËùÓĞÆäËû´ÓÕ¾Éè±¸
+// TODO canopenç§»æ¤: åˆå§‹åŒ–CANOpenä¸»ç«™,åŒæ—¶å¤ä½æ€»çº¿ä¸Šæ‰€æœ‰å…¶ä»–ä»ç«™è®¾å¤‡
 void CanOpen_Start()
 {
-    setNodeId(&PDO_Master_Data, 0x00);
-    setState(&PDO_Master_Data, Initialisation);
-    setState(&PDO_Master_Data, Pre_operational);
-    setState(&PDO_Master_Data, Operational);
+    setNodeId(master_node, 0x00);
+    setState(master_node, Initialisation);
+    setState(master_node, Pre_operational);
+    setState(master_node, Operational);
 }
 
+// TODO canopenç§»æ¤: ä»ç«™ä¸Šçº¿ä¼šè°ƒç”¨è¿™ä¸ªå‡½æ•°
 void CanOpenDeviceBootUp(unsigned char NodeId)
 {
-    CAN_NewSlaveBootup(NodeId); // TODO(eric): call this function when node device booting up
+    // CAN_NewSlaveBootup(NodeId); // put your operate function here
+    CanOpenChangeNMT(NodeId, NMT_Start_Node);
 }
-void CanOpenChangeNMT(char NodeID)
+
+void CanOpenChangeNMT(char NodeID, int NodeState)
 {
-    masterSendNMTstateChange(&PDO_Master_Data, NodeID, NMT_Start_Node); // ·¢PDOÆô¶¯Ö¸Áî
+    masterSendNMTstateChange(master_node, NodeID, NodeState); // å‘PDOå¯åŠ¨æŒ‡ä»¤
 }
+
 void CanOpen_Stop()
 {
-    setNodeId(&PDO_Master_Data, 0x00);
-    setState(&PDO_Master_Data, Stopped);
+    setNodeId(master_node, 0x00);
+    setState(master_node, Stopped);
 }
 void Change_PDO_Time(long time)
 {
@@ -136,7 +122,7 @@ void Change_PDO_Time(long time)
 }
 unsigned char CanOpen_SDO_Read(char id, short index, char sub, char type)
 {
-    return readNetworkDictCallback(&PDO_Master_Data, id, index, sub, type, SDOCallback_t_Index1800_Subindex0, 0);
+    return readNetworkDictCallback(master_node, id, index, sub, type, SDOCallback_t_Index1800_Subindex0, 0);
 }
 unsigned char Canopen_SDO_Write(char id, short index, char sub, char type, long data)
 {
@@ -154,40 +140,47 @@ unsigned char Canopen_SDO_Write(char id, short index, char sub, char type, long 
     case 0x01:
         size = 1;
         data_bool = (char)data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_bool, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_bool, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     case 0x02:
         size = 1;
         data_s8 = (char)data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_s8, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_s8, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     case 0x03:
         size = 2;
         data_s16 = (short)data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_s16, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_s16, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     case 0x04:
         size = 4;
         data_s32 = data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_s32, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_s32, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     case 0x05:
         size = 1;
         data_u8 = (unsigned char)data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_u8, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_u8, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     case 0x06:
         size = 2;
         data_u16 = (unsigned short)data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_u16, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_u16, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     case 0x07:
         size = 4;
         data_u32 = (unsigned long)data;
-        err = writeNetworkDictCallBack(&PDO_Master_Data, id, index, sub, size, type, &data_u32, SDOCallback_t_Index1800_Subindex0, 0);
+        err = writeNetworkDictCallBack(master_node, id, index, sub, size, type, &data_u32, SDOCallback_t_Index1800_Subindex0, 0);
         break;
     default:
         break;
     }
     return err;
+}
+
+void SDO_Write_Test()
+{
+    UNS32 tt[1] = {10};
+    writeNetworkDictCallBack(master_node, 0x1f, 0x2000, 0x00, 4, int32, tt, SDOCallback_t_Index1800_Subindex0, 0);
+    // writeNetworkDictCallBack(master_node,0x01,0x2000,0x00,4,int32,tt,SDOCallback_t_Index1800_Subindex0,0);
 }

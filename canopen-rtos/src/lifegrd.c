@@ -372,7 +372,6 @@ void _heartbeatError(CO_Data* d, UNS8 heartbeatID){}
 void _post_SlaveBootup(CO_Data* d, UNS8 SlaveID)
 {
 	CanOpenDeviceBootUp(SlaveID);
-	masterSendNMTstateChange(&PDO_Master_Data,SlaveID,NMT_Start_Node);	//·¢PDOÆô¶¯Ö¸Áî
 }
 void _post_SlaveStateChange(CO_Data* d, UNS8 nodeId, e_nodeState newNodeState){}
 void _nodeguardError(CO_Data* d, UNS8 id){}
