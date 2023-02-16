@@ -6,6 +6,9 @@
         "pdo_master.h": "c",
         "timer.h": "c",
         "canopen_interface.h": "c",
-        "canfestival.h": "c"
+        "canfestival.h": "c",
+        "sync.h": "c",
+        "users_canfestival.h": "c",
+        "applicfg.h": "c"
     }
 }

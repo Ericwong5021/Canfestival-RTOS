@@ -6,7 +6,9 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/canopen-rtos/od_master",
                 "${workspaceFolder}/canopen-rtos/inc",
-                "${workspaceFolder}/canopen-rtos/od_master"
+                "${workspaceFolder}/canopen-rtos/od_master",
+                "${workspaceFolder}/canopen-rtos/od_master",
+                "${workspaceFolder}/canopen-rtos"
             ],
             "defines": [
                 "_DEBUG",

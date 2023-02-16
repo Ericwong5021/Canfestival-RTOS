@@ -4,7 +4,7 @@
  * @Last Modified by: Ericwong
  * @Last Modified time: 2023-02-15 18:33:42
  */
-#include "stm32f1_canfestival.h"
+#include "users_canfestival.h"
 /************************** Modul variables **********************************/
 // TODO canopen移植: 改为主站节点的字典名称,所有主站的接口函数都会引用这个指针
 CO_Data *master_node = &PDO_Master_Data;
@@ -30,20 +30,10 @@ UNS8 canSend(CAN_PORT notused, Message *m)
     return Can_Send_Msg(m);
 }
 
-// TODO canopen移植: PDO同步帧调用这个函数,根据需要的同步周期调用 (硬件手动发送比协议栈发送稳定)
-void CANSendSyc(void)
-{
-    Message SycMesg;
-    SycMesg.cob_id = 0x80;
-    SycMesg.len = 0;
-    SycMesg.rtr = 0;
-    Can_Send_Msg(&SycMesg);
-}
+
 unsigned int TimeCNT = 0;             // 时间计数
 unsigned int NextTime = 0;            // 下一次触发时间计数
 unsigned int TIMER_MAX_COUNT = 70000; // 最大的时间计数
-// Store the last timer value to calculate the elapsed time
-static TIMEVAL last_time_set = TIMEVAL_MAX;
 
 // TODO canopen移植: 在目标芯片上开一个1毫秒的定时器，每隔1ms调用一次这个函数
 void TimerForCan(void)
@@ -67,6 +57,8 @@ void setTimer(UNS32 value)
 
 UNS32 getElapsedTime(void)
 {
+    // Store the last timer value to calculate the elapsed time
+    static TIMEVAL last_time_set = TIMEVAL_MAX;
     int ret = 0;
 
     ret = TimeCNT > last_time_set ? TimeCNT - last_time_set : TimeCNT + TIMER_MAX_COUNT - last_time_set;
@@ -74,9 +66,39 @@ UNS32 getElapsedTime(void)
     return ret;
 }
 
-Message my_message;
+// TODO canopen移植: 初始化CANOpen主站,同时复位总线上所有其他从站设备
+void canopen_start()
+{
+    setNodeId(master_node, 0x00);
+    setState(master_node, Initialisation);
+    setState(master_node, Pre_operational);
+    setState(master_node, Operational);
+}
 
-/* SDO报文读取成功回调函数 */
+// TODO canopen移植: PDO同步帧调用这个函数,根据需要的同步周期调用 (硬件手动发送比协议栈发送稳定)
+void CANSendSyc(void)
+{
+    Message SycMesg;
+    SycMesg.cob_id = 0x80;
+    SycMesg.len = 0;
+    SycMesg.rtr = 0;
+    Can_Send_Msg(&SycMesg);
+}
+
+// TODO canopen移植: 从站上线会调用这个函数
+void CanOpenDeviceBootUp(unsigned char NodeId)
+{
+    // CAN_NewSlaveBootup(NodeId); // put your operate function here
+    CanOpenChangeNMT(NodeId, NMT_Start_Node);
+}
+
+// TODO canopen移植: 切换从站状态
+void CanOpenChangeNMT(char NodeID, int NodeState)
+{
+    masterSendNMTstateChange(master_node, NodeID, NodeState); // 发PDO启动指令
+}
+
+/* SDO报文读写回调函数 */
 void SDOCallback_t_Index1800_Subindex0(CO_Data *d, UNS8 nodeId)
 {
     UNS8 data[8];
@@ -88,42 +110,13 @@ void SDOCallback_t_Index1800_Subindex0(CO_Data *d, UNS8 nodeId)
     // printf("abortCode = %ld, size = %ld, data = %d\r\n", abortCode, size, data);
 }
 
-extern unsigned long PDO_Master_obj1006;
-
-// TODO canopen移植: 初始化CANOpen主站,同时复位总线上所有其他从站设备
-void CanOpen_Start()
-{
-    setNodeId(master_node, 0x00);
-    setState(master_node, Initialisation);
-    setState(master_node, Pre_operational);
-    setState(master_node, Operational);
-}
-
-// TODO canopen移植: 从站上线会调用这个函数
-void CanOpenDeviceBootUp(unsigned char NodeId)
-{
-    // CAN_NewSlaveBootup(NodeId); // put your operate function here
-    CanOpenChangeNMT(NodeId, NMT_Start_Node);
-}
-
-void CanOpenChangeNMT(char NodeID, int NodeState)
-{
-    masterSendNMTstateChange(master_node, NodeID, NodeState); // 发PDO启动指令
-}
-
-void CanOpen_Stop()
-{
-    setNodeId(master_node, 0x00);
-    setState(master_node, Stopped);
-}
-void Change_PDO_Time(long time)
-{
-    PDO_Master_obj1006 = time;
-}
+// TODO canopen移植: canopen字典读取函数,读取的数据由回调函数返回
 unsigned char CanOpen_SDO_Read(char id, short index, char sub, char type)
 {
     return readNetworkDictCallback(master_node, id, index, sub, type, SDOCallback_t_Index1800_Subindex0, 0);
 }
+
+// TODO canopen移植: canopen字典写入函数,写入的结果由回调函数返回
 unsigned char Canopen_SDO_Write(char id, short index, char sub, char type, long data)
 {
     char size;

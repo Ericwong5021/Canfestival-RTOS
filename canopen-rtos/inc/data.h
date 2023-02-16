@@ -47,7 +47,7 @@ extern "C"
 #include "states.h"
 #include "sync.h"
 
-#include "stm32f1_canfestival.h" //TODO(eric): change to common file name
+#include "users_canfestival.h" //TODO(eric): change to common file name
 
 #ifdef CO_ENABLE_LSS
 #include "lss.h"
